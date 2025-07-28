@@ -66,10 +66,7 @@ export function JobCreationForm({ onSuccess }: JobCreationFormProps) {
   }
 
   return (
-    <Card className="rounded-2xl">
-      <CardHeader>
-        <CardTitle className="text-xl font-semibold">Job Details</CardTitle>
-      </CardHeader>
+    <Card>
       <CardContent>
         {error && (
           <Alert className="mb-6 border-red-200 bg-red-50">
@@ -145,7 +142,7 @@ export function JobCreationForm({ onSuccess }: JobCreationFormProps) {
               <Label htmlFor="salaryMin" className="text-sm font-medium">
                 Salary Range
               </Label>
-              <div className="flex ">
+              <div className="flex space-x-1   ">
                 <Input
                   id="salaryMin"
                   type="number"
@@ -166,8 +163,8 @@ export function JobCreationForm({ onSuccess }: JobCreationFormProps) {
               </div>
             </div>
           
-            <Label className="text-sm font-medium">Application Deadline *</Label>
-            <div>
+            <div className="space-y-2">
+              <Label className="text-sm font-medium">Application Deadline *</Label>
               <Popover>
                 <PopoverTrigger asChild>
                   <Button

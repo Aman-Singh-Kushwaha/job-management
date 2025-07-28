@@ -84,7 +84,7 @@ export default function JobListPage() {
 
         <DialogContent className="max-w-4xl">
           <DialogHeader>
-            <DialogTitle>Create Job Opening</DialogTitle>
+            <DialogTitle className="text-2xl text-center">Create Job Opening</DialogTitle>
           </DialogHeader>
           <JobCreationForm onSuccess={handleJobCreated} />
         </DialogContent>
