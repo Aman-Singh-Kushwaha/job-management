@@ -45,11 +45,6 @@ export const jobsApi = {
     return apiCall(endpoint)
   },
 
-  // Get single job by ID
-  getJobById: async (id) => {
-    return apiCall(`/jobs/${id}`)
-  },
-
   // Create new job
   createJob: async (jobData) => {
     return apiCall("/jobs", {
@@ -58,28 +53,7 @@ export const jobsApi = {
     })
   },
 
-  // Update existing job
-  updateJob: async (id, jobData) => {
-    return apiCall(`/jobs/${id}`, {
-      method: "PUT",
-      body: JSON.stringify(jobData),
-    })
-  },
 
-  // Delete job
-  deleteJob: async (id) => {
-    return apiCall(`/jobs/${id}`, {
-      method: "DELETE",
-    })
-  },
-
-  // Save job as draft
-  saveDraft: async (jobData) => {
-    return apiCall("/jobs/draft", {
-      method: "POST",
-      body: JSON.stringify(jobData),
-    })
-  },
 }
 
 

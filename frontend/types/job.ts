@@ -4,8 +4,8 @@ export interface Job {
   companyName: string
   location: string
   jobType: "Full-time" | "Part-time" | "Contract" | "Internship"
-  salaryMin: number
-  salaryMax: number
+  salaryMin?: number
+  salaryMax?: number
   jobDescription: string
   applicationDeadline: Date
   createdAt: Date
@@ -13,11 +13,11 @@ export interface Job {
 }
 
 export interface JobFilters {
-  jobTitle: string
-  location: string
-  jobType: string
-  salaryMin: number
-  salaryMax: number
+  jobTitle?: string
+  location?: string
+  jobType?: string
+  salaryMin?: number
+  salaryMax?: number
 }
 
 export interface CreateJobData {
@@ -25,8 +25,8 @@ export interface CreateJobData {
   companyName: string
   location: string
   jobType: "Full-time" | "Part-time" | "Contract" | "Internship"
-  salaryMin: number
-  salaryMax: number
+  salaryMin?: number
+  salaryMax?: number
   jobDescription: string
   applicationDeadline: Date
 }

@@ -1,4 +1,5 @@
 import { IsString, IsNotEmpty, IsEnum, IsNumber, IsDate, Min, Max, IsOptional } from 'class-validator';
+import { Type } from 'class-transformer';
 import { JobType } from '../jobs.entity';
 
 export class CreateJobDto {
@@ -22,14 +23,6 @@ export class CreateJobDto {
   @IsNotEmpty()
   jobDescription: string;
 
-  @IsString()
-  @IsNotEmpty()
-  requirements: string;
-
-  @IsString()
-  @IsNotEmpty()
-  responsibilities: string;
-
   @IsNumber()
   @IsOptional()
   @Min(0)
@@ -40,6 +33,7 @@ export class CreateJobDto {
   @Min(0)
   salaryMax?: number;
 
+  @Type(() => Date)
   @IsDate()
   @IsNotEmpty()
   applicationDeadline: Date;

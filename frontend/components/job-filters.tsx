@@ -1,14 +1,12 @@
-"use client"
+'use client'
 
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Slider } from "@/components/ui/slider"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Search, X } from "lucide-react"
-import type { JobFilters } from "@/types/job"
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Slider } from '@/components/ui/slider'
+import { Separator } from '@/components/ui/separator'
+import type { JobFilters } from '@/types/job'
+import { Briefcase, MapPin, Search, X } from 'lucide-react'
 
 interface JobFiltersProps {
   filters: Partial<JobFilters>
@@ -17,11 +15,8 @@ interface JobFiltersProps {
 }
 
 export function JobFiltersComponent({ filters, onFiltersChange, onClearFilters }: JobFiltersProps) {
-  const [salaryRange, setSalaryRange] = useState<[number, number]>(filters.salaryRange || [0, 200000])
-
   const handleSalaryChange = (value: [number, number]) => {
-    setSalaryRange(value)
-    onFiltersChange({ ...filters, salaryRange: value })
+    onFiltersChange({ ...filters, salaryMin: value[0], salaryMax: value[1] })
   }
 
   const formatSalary = (value: number) => {
@@ -31,58 +26,48 @@ export function JobFiltersComponent({ filters, onFiltersChange, onClearFilters }
     return `₹${(value / 1000).toFixed(0)}k`
   }
 
-  return (
-    <Card className="w-full rounded-2xl">
-      <CardHeader>
-        <div className="flex items-center justify-between">
-          <CardTitle className="text-lg font-semibold">Filters</CardTitle>
-          <Button variant="ghost" size="sm" onClick={onClearFilters} className="text-[#686868] hover:text-[#333333]">
-            <X className="w-4 h-4 mr-1" />
-            Clear All
-          </Button>
-        </div>
-      </CardHeader>
-      <CardContent className="space-y-6">
-        {/* Job Title Search */}
-        <div className="space-y-2">
-          <Label htmlFor="jobTitle" className="text-sm font-medium">
-            Job Title
-          </Label>
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-[#686868]" />
-            <Input
-              id="jobTitle"
-              placeholder="Search by job title..."
-              value={filters.jobTitle || ""}
-              onChange={(e) => onFiltersChange({ ...filters, jobTitle: e.target.value })}
-              className="pl-10 border-[#ccc2c2] focus:border-[#a797fd] rounded-lg"
-            />
-          </div>
-        </div>
+  const salaryValue: [number, number] = [filters.salaryMin || 0, filters.salaryMax || 200000]
 
-        {/* Location */}
-        <div className="space-y-2">
-          <Label htmlFor="location" className="text-sm font-medium">
-            Location
-          </Label>
+  return (
+    <div className="bg-white p-4 rounded-lg border-b mb-8">
+      <div className="flex items-center gap-4">
+        {/* Job Title Search */}
+        <div className="flex items-center gap-2 flex-1 group">
+          <Search className="h-5 w-5 text-gray-400 group-focus-within:text-black transition-colors" />
           <Input
-            id="location"
-            placeholder="Enter location..."
-            value={filters.location || ""}
-            onChange={(e) => onFiltersChange({ ...filters, location: e.target.value })}
-            className="border-[#ccc2c2] focus:border-[#a797fd] rounded-lg"
+            id="jobTitle"
+            placeholder="Search by job title..."
+            value={filters.jobTitle || ''}
+            onChange={(e) => onFiltersChange({ ...filters, jobTitle: e.target.value })}
+            className="w-full bg-transparent border-none focus:ring-0 text-base placeholder:text-gray-400"
           />
         </div>
 
+        <Separator orientation="vertical" className="h-6" />
+
+        {/* Location */}
+        <div className="flex items-center gap-2 flex-1 group">
+          <MapPin className="h-5 w-5 text-gray-400 group-focus-within:text-black transition-colors" />
+          <Input
+            id="location"
+            placeholder="Location"
+            value={filters.location || ''}
+            onChange={(e) => onFiltersChange({ ...filters, location: e.target.value })}
+            className="w-full bg-transparent border-none focus:ring-0 text-base placeholder:text-gray-400"
+          />
+        </div>
+
+        <Separator orientation="vertical" className="h-6" />
+
         {/* Job Type */}
-        <div className="space-y-2">
-          <Label className="text-sm font-medium">Job Type</Label>
+        <div className="flex items-center gap-2 flex-1 group">
+          <Briefcase className="h-5 w-5 text-gray-400 group-focus-within:text-black transition-colors" />
           <Select
-            value={filters.jobType || "All Types"}
-            onValueChange={(value) => onFiltersChange({ ...filters, jobType: value })}
+            value={filters.jobType || 'All Types'}
+            onValueChange={(value) => onFiltersChange({ ...filters, jobType: value === 'All Types' ? undefined : value })}
           >
-            <SelectTrigger className="border-[#ccc2c2] focus:border-[#a797fd] rounded-lg">
-              <SelectValue placeholder="Select job type" />
+            <SelectTrigger className="w-full bg-transparent border-none focus:ring-0 text-base data-[placeholder]:text-gray-400">
+              <SelectValue placeholder="Job Type" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="All Types">All Types</SelectItem>
@@ -94,25 +79,28 @@ export function JobFiltersComponent({ filters, onFiltersChange, onClearFilters }
           </Select>
         </div>
 
+        <Separator orientation="vertical" className="h-6" />
+
         {/* Salary Range */}
-        <div className="space-y-4">
-          <Label className="text-sm font-medium">Salary Range</Label>
-          <div className="px-2">
-            <Slider
-              value={salaryRange}
-              onValueChange={handleSalaryChange}
-              max={200000}
-              min={0}
-              step={5000}
-              className="w-full"
-            />
-            <div className="flex justify-between text-sm text-[#686868] mt-2">
-              <span>{formatSalary(salaryRange[0])}</span>
-              <span>{formatSalary(salaryRange[1])}</span>
-            </div>
+        <div className="flex-1">
+          <div className="flex justify-between items-center mb-2">
+            <span className="text-sm font-medium text-gray-700">Salary per month</span>
+            <span className="text-sm font-semibold text-black">{formatSalary(salaryValue[0])} - {formatSalary(salaryValue[1])}</span>
           </div>
+          <Slider
+            value={salaryValue}
+            onValueChange={handleSalaryChange}
+            max={200000}
+            min={0}
+            step={5000}
+            className="w-full"
+          />
         </div>
-      </CardContent>
-    </Card>
+
+        <Button onClick={onClearFilters} variant="ghost" size="icon" className="h-10 w-10">
+          <X className="w-5 h-5 text-gray-500" />
+        </Button>
+      </div>
+    </div>
   )
 }

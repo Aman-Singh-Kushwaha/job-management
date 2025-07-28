@@ -16,7 +16,8 @@ export function JobCard({ job }: JobCardProps) {
 
   const formatDate = (date: Date) => {
     const now = new Date()
-    const diffTime = Math.abs(now.getTime() - date.getTime())
+    const jobDate = new Date(date); // Ensure date is a Date object
+    const diffTime = Math.abs(now.getTime() - jobDate.getTime())
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
 
     if (diffDays === 1) return "1 day ago"

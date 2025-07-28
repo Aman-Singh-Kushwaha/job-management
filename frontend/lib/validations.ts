@@ -17,7 +17,7 @@ export const createJobSchema = z
       .min(2, "Location must be at least 2 characters")
       .max(100, "Location must be less than 100 characters"),
 
-    jobType: z.enum(["Full-time", "Part-time", "Contract", "Internship"], {
+    jobType: z.enum(["full-time", "part-time", "contract", "internship"], {
       required_error: "Please select a job type",
     }),
 

@@ -1,8 +1,9 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import { jobsApi } from "@/lib/api"
 import type { Job, JobFilters } from "@/types/job"
+import { useDebounce } from "@/hooks/use-debounce"
 
 export function useJobs(initialFilters: Partial<JobFilters> = {}) {
   const [jobs, setJobs] = useState<Job[]>([])
@@ -10,7 +11,11 @@ export function useJobs(initialFilters: Partial<JobFilters> = {}) {
   const [error, setError] = useState<string | null>(null)
   const [filters, setFilters] = useState<Partial<JobFilters>>(initialFilters)
 
-  const fetchJobs = async (currentFilters = filters) => {
+  const debouncedJobTitle = useDebounce(filters.jobTitle, 500)
+  const debouncedLocation = useDebounce(filters.location, 500)
+  const debouncedSalaryMin = useDebounce(filters.salaryMin, 500)
+  const debouncedSalaryMax = useDebounce(filters.salaryMax, 500)
+  const fetchJobs = useCallback(async (currentFilters: Partial<JobFilters>) => {
     try {
       setLoading(true)
       setError(null)
@@ -22,22 +27,26 @@ export function useJobs(initialFilters: Partial<JobFilters> = {}) {
     } finally {
       setLoading(false)
     }
-  }
+  }, [])
+
+  useEffect(() => {
+    const currentFilters : JobFilters = {
+      jobTitle: debouncedJobTitle,
+      location: debouncedLocation,
+      salaryMin: debouncedSalaryMin,
+      salaryMax: debouncedSalaryMax,
+      ...filters.jobType
+    }
+    fetchJobs(currentFilters)
+  }, [debouncedJobTitle, debouncedLocation, filters.jobType, debouncedSalaryMin, debouncedSalaryMax, fetchJobs])
 
   const updateFilters = (newFilters: Partial<JobFilters>) => {
-    const updatedFilters = { ...filters, ...newFilters }
-    setFilters(updatedFilters)
-    fetchJobs(updatedFilters)
+    setFilters((prevFilters) => ({ ...prevFilters, ...newFilters }))
   }
 
   const clearFilters = () => {
     setFilters({})
-    fetchJobs({})
   }
-
-  useEffect(() => {
-    fetchJobs()
-  }, [])
 
   return {
     jobs,
@@ -46,7 +55,7 @@ export function useJobs(initialFilters: Partial<JobFilters> = {}) {
     filters,
     updateFilters,
     clearFilters,
-    refetch: fetchJobs,
+    refetch: () => fetchJobs(filters),
   }
 }
 
